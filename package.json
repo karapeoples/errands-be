@@ -1,40 +1,40 @@
 {
-  "name": "errands-be",
-  "version": "1.0.0",
-  "description": "Portfolio Piece and Usable App for Dale and Friends",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "server": "nodemon index.js",
-    "test": "cypress open"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/karapeoples/errands-be.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/karapeoples/errands-be/issues"
-  },
-  "homepage": "https://github.com/karapeoples/errands-be#readme",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "helmet": "^4.6.0",
-    "jsonwebtoken": "^8.5.1",
-    "knex": "^0.95.6",
-    "knex-cleaner": "^1.3.1",
-    "morgan": "^1.10.0",
-    "pg": "^8.6.0",
-    "sqlite3": "^5.0.2"
-  },
-  "devDependencies": {
-    "cypress": "^7.6.0",
-    "nodemon": "^2.0.9"
-  }
+	"name": "errands-be",
+	"version": "1.0.0",
+	"description": "Portfolio Piece and Usable App for Dale and Friends",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"server": "nodemon index.js",
+		"test": "cypress open"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/karapeoples/errands-be.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/karapeoples/errands-be/issues"
+	},
+	"homepage": "https://github.com/karapeoples/errands-be#readme",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"bcryptjs": "^2.4.3",
+		"cors": "^2.8.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"helmet": "^4.6.0",
+		"jsonwebtoken": "^8.5.1",
+		"knex": "^0.95.6",
+		"knex-cleaner": "^1.3.1",
+		"morgan": "^1.10.0",
+		"pg": "^8.6.0",
+		"sqlite3": "^5.0.2"
+	},
+	"devDependencies": {
+		"cypress": "^7.6.0",
+		"nodemon": "^2.0.9"
+	}
 }
