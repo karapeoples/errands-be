@@ -51,14 +51,14 @@ router.delete('/delete/:id', (req, res, next) => {
 	User.removeUser(id).then((removed) => {
 						removed
 							? res.status(200).json({
-									message: `Removed user id ${id} from the database`,
+									message: `Removed Consumer id ${id} from the database`,
 							})
 							: null;
 		})
 		.catch((error) =>
 			res.status(500).json({
 				errorMsg: error.message,
-				message: `There is no user with the id of ${id} to delete`,
+				message: `There is no consumer with the id of ${id} to delete`,
 			}),
 		);
 });
