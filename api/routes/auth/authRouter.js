@@ -43,7 +43,9 @@ router.post('/register', async (req, res, next) => {
 				break;
 			case 'admin':
 				// add user_id to respective role table for foreign key requirement
-				roleInfo = { user_id: newUserId };
+				roleInfo = {
+					user_id: newUserId,
+				};
 				userRole = await regUser.addAdmin(roleInfo);
 				break;
 			default:

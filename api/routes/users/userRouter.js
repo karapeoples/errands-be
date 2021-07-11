@@ -10,12 +10,14 @@ router.get('/admin', (req, res) => {
 				res.status(200).json(admins);
 			}
 		})
-		.catch((error) => res.status(500).json({ errorMsg: error.message, message: 'There are no admins!' }));
+		.catch((error) => {
+			res.status(500).json({ errorMsg: error.message, note: 'There are no admins!' })
+		});
 });
 
 router.get('/user', (req, res) => {
 	User.findUser()
-		.then((users) => {
+		.then(([users]) => {
 			if (!users) {
 				res.status(400).json({ message: 'There are no users!' });
 			} else {
@@ -28,7 +30,7 @@ router.get('/user', (req, res) => {
 router.get('/user/:id', (req, res) => {
 	const { id } = req.params;
 	User.findUserById(id)
-		.then((users) => {
+		.then(([users]) => {
 			if (!users) {
 				res.status(400).json({ message: `No user with the id of ${id}` });
 			} else {
@@ -43,38 +45,15 @@ router.get('/user/:id', (req, res) => {
 		);
 });
 
-router.get('/info/:id', (req, res) => {
-	const { id } = req.params;
-	User.findUserInfoByUserId(id)
-		.then((users) => {
-			if (!users) {
-				res.status(400).json({ message: `No user with the id of ${id}` });
-			} else {
-				res.status(200).json(users);
-			}
-		})
-		.catch((error) =>
-			res.status(500).json({
-				errorMsg: error.message,
-				message: `No users with the id of ${id}`,
-			}),
-		);
-});
 
 router.delete('/delete/:id', (req, res, next) => {
 	const { id } = req.params;
-	User.findRoleInfoByUserId(id)
-		.then((user) => {
-			user
-				? User.removeUser(id).then((removed) => {
+	User.removeUser(id).then((removed) => {
 						removed
 							? res.status(200).json({
 									message: `Removed user id ${id} from the database`,
-									removedUser: user,
 							})
 							: null;
-				})
-				: null;
 		})
 		.catch((error) =>
 			res.status(500).json({

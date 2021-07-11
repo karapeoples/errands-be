@@ -28,12 +28,8 @@ const findUserInfoByUserId = (id) => {
 		.first();
 };
 
-const findRoleInfoByUserId = (id) => {
-	return db('consumer').where('consumer.id', id).first();
-};
-
 const removeUser = (id) => {
-	db('consumer').where({ id }).del();
+	return db('consumer').where({ id }).del();
 };
 
 module.exports = {
@@ -41,6 +37,5 @@ module.exports = {
 	findUser,
 	findUserById,
 	findUserInfoByUserId,
-	findRoleInfoByUserId,
 	removeUser,
 };
