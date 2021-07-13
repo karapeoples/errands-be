@@ -19,9 +19,11 @@ Cypress.Commands.add('register', (username, password, role) => {
 });
 
 describe('Add an Authenticated Admin', () => {
-	it('Adds an Admin', () => {
-		cy.register('Test Admin', 'password', 'admin');
-  });
+    beforeEach(() => {
+      cy.exec('knex seed:run');
+			cy.register('Test User', 'password', 'consumer');
+			cy.register('Test Admin', 'password', 'admin');
+    })
   it('Gets All Admins', () => {
 		const token = Cypress.env('token');
 		const authorization = `${token}`;
@@ -60,7 +62,7 @@ describe('Add an Authenticated Admin', () => {
 			expect(res.body).property('role').equal('consumer');
 		});
 	});
-  /* it('Gets A Single User', () => {
+  it('Gets A Single User', () => {
     const token = Cypress.env('token');
 		const authorization = `${token}`;
 				const options = {
@@ -77,6 +79,22 @@ describe('Add an Authenticated Admin', () => {
 					expect(res.body).property('password').to.be.a('string');
 					expect(res.body).property('user_id').to.be.a('number').equal(1);
 					expect(res.body).property('role').equal('consumer');
-				});
-  }) */
+    });
+  })
+  it('Deletes a User', () => {
+        const token = Cypress.env('token');
+				const authorization = `${token}`;
+				const options = {
+					method: 'DELETE',
+					url: '/api/users/delete/1',
+					headers: {
+						authorization,
+					},
+        };
+    const id = 1
+    cy.request(options).then((res) => {
+      expect(res.status).equal(200)
+      expect(res.body.message).equal(`Removed Consumer id ${id} from the database`);
+    })
+  })
 });

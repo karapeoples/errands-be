@@ -30,7 +30,7 @@ router.get('/user', (req, res) => {
 router.get('/user/:id', (req, res) => {
 	const { id } = req.params;
 	User.findUserById(id)
-		.then(([users]) => {
+		.then((users) => {
 			if (!users) {
 				res.status(400).json({ message: `No user with the id of ${id}` });
 			} else {
