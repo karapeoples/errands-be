@@ -94,7 +94,7 @@ describe('Add an Authenticated Admin', () => {
     const id = 1
     cy.request(options).then((res) => {
       expect(res.status).equal(200)
-      expect(res.body.message).equal(`Removed Consumer id ${id} from the database`);
+      expect(res.body).property('message').equal(`Removed Consumer id ${id} from the database`);
     })
   })
 });
