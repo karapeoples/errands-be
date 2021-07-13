@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/admin', (req, res) => {
 	User.findAdmin()
-		.then((admins) => {
+		.then(([admins]) => {
 			if (!admins) {
 				res.status(400).json({ message: 'There are no admins!' });
 			} else {
