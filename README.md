@@ -2,7 +2,10 @@
 
 Portfolio Piece and Usable App for Dale and Friends
 
-BE
+##BE
+
+###Routes/API/Endpoints
+
 BASEURL: 'localhost'
 
 BASE ROUTE: BASEURL/api/welcome
@@ -21,4 +24,28 @@ BASE ROUTE: BASEURL/api/users
 | Get User By Id | GET           | /user/:user_id   |
 | Delete User    | DELETE        | /delete/:user_id |
 
--
+BASE ROUTE: BASEURL/api/tasks
+
+| USER-ROUTES    | REQUEST TYPES | ENDPOINTS |
+| -------------- | ------------- | --------- |
+| Get All Tasks  | GET           | /         |
+| Get Task by ID | GET           | /:task_id |
+| Make a Task    | POST          | /         |
+| Update Task    | PUT           | /:task_id |
+| Delete Task    | DELETE        | /:task_id |
+
+###Schemas
+
+userObject = {
+username: "User 1",
+password: "user password",
+role: "admin"
+}
+
+role choice = "admin" or "consumer"
+
+taskObject = {
+title: "Errand Example",
+description: "Any Notes",
+completeBy: "07-13-2021"
+}
