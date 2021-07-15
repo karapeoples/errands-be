@@ -37,7 +37,6 @@ router.post('/register', async (req, res, next) => {
 			case 'consumer':
 				roleInfo = {
 					user_id: newUserId,
-
 				};
 				userRole = await regUser.addUser(roleInfo);
 				break;

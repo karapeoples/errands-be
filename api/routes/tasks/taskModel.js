@@ -8,13 +8,22 @@ const findById = (id) => {
 	return db('tasks').where({ id }).first();
 };
 
-
+const findByFilter = (filter) =>{
+  return db('tasks').where(filter).first()
+}
 
 const add = (task) => {
-	return db.select('tasks as t','consumer.id as c')
-		.insert(task)
-		.then((ids) => {
-			return findById(ids[0]);
+  let consumer = db('tasks as t').join('consumer as c', 't.consumer_id', 'c.id').select('t.consumer_id');
+  let taskObj = {
+    title: task.title,
+    description: task.description,
+    completeBy: task.completeBy,
+    consumer_id: consumer
+  }
+   return db('tasks')
+    .insert(taskObj)
+    .then((ids) => {
+      return findById(ids);
 		});
 };
 

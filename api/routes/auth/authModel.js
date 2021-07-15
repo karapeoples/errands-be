@@ -49,7 +49,7 @@ async function addAdmin(user) {
 }
 
 async function addUser(user) {
-	const [id] = await db('consumer').insert(user, 'id').returning('id');
+	const [id] = await db('consumer').insert(user, 'id');
 	const users = await db('consumer').select('*').where({ id }).first();
 	return users;
 }
