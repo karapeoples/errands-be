@@ -17,12 +17,14 @@ BASE ROUTE: BASEURL/api/welcome
 
 BASE ROUTE: BASEURL/api/users
 
-| USER-ROUTES    | REQUEST TYPES | ENDPOINTS        |
-| -------------- | ------------- | ---------------- |
-| Get Admins     | GET           | /admin           |
-| Get Users      | GET           | /user            |
-| Get User By Id | GET           | /user/:user_id   |
-| Delete User    | DELETE        | /delete/:user_id |
+| USER-ROUTES         | REQUEST TYPES | ENDPOINTS                |
+| ------------------- | ------------- | ------------------------ |
+| Get Admins          | GET           | /admin                   |
+| Get Users           | GET           | /user                    |
+| Get All Users Tasks | GET           | /user/:consumer_id/tasks |
+| Make a Task         | POST          | /user/:consumer_id/task  |
+| Get User By Id      | GET           | /user/:user_id           |
+| Delete User         | DELETE        | /delete/:user_id         |
 
 BASE ROUTE: BASEURL/api/tasks
 
@@ -30,7 +32,6 @@ BASE ROUTE: BASEURL/api/tasks
 | -------------- | ------------- | --------- |
 | Get All Tasks  | GET           | /         |
 | Get Task by ID | GET           | /:task_id |
-| Make a Task    | POST          | /         |
 | Update Task    | PUT           | /:task_id |
 | Delete Task    | DELETE        | /:task_id |
 

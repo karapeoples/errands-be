@@ -1,4 +1,4 @@
-const [express, User] = [require('express'), require('./userModel')];
+const [express, User, Tasks] = [require('express'), require('./userModel'), require('../tasks/taskModel')];
 const router = express.Router();
 
 router.get('/admin', (req, res) => {
@@ -45,6 +45,32 @@ router.get('/user/:id', (req, res) => {
 		);
 });
 
+router.get('/user/:consumer_id/tasks', (req, res) => {
+	const  {consumer_id} = req.params
+	Tasks.findTaskByConsumer({ consumer_id })
+		.then((errand) => {
+			res.status(200).json(errand);
+		})
+		.catch((err) => {
+			res.status(500).json({ error: err.message, note: 'Try again' });
+		});
+});
+
+router.post('/user/:consumer_id/task', (req, res) => {
+	let taskObj = {
+		title: req.body.title,
+		description: req.body.description,
+		completeBy: req.body.completeBy,
+		consumer_id: req.params.id,
+	};
+	Tasks.add(taskObj)
+		.then((errand) => {
+			res.status(201).json({ message: 'Success A New Errand was Created', errand });
+		})
+		.catch((err) => {
+			res.status(500).json({ error: err.message, note: 'There was an error on the Backend with the Database' });
+		});
+});
 
 router.delete('/delete/:id', (req, res, next) => {
 	const { id } = req.params;
