@@ -12,13 +12,16 @@ const findByFilter = (filter) =>{
   return db('tasks').where(filter).first()
 }
 
-const add = (task) => {
-  let consumer = db('tasks as t').join('consumer as c', 't.consumer_id', 'c.id').select('t.consumer_id');
+const add = (task, id) => {
+  db('tasks as t')
+			.join('consumer as c', 't.id', '=', `c.id`)
+			.where('t.consumer_id', 'c.id', id)
+			.select(`c.id`)
   let taskObj = {
     title: task.title,
     description: task.description,
     completeBy: task.completeBy,
-    consumer_id: consumer
+    consumer_id: id
   }
    return db('tasks')
     .insert(taskObj)
