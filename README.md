@@ -1,10 +1,10 @@
-# errands-be
+# Errands-BE
 
 Portfolio Piece and Usable App for Dale and Friends
 
-##BE
+## BACKEND~REST API with CYPRESS IO TESTING
 
-###Routes/API/Endpoints
+### Routes/API/Endpoints
 
 BASEURL: 'localhost'
 
@@ -30,12 +30,11 @@ BASE ROUTE: BASEURL/api/tasks
 
 | USER-ROUTES    | REQUEST TYPES | ENDPOINTS |
 | -------------- | ------------- | --------- |
-| Get All Tasks  | GET           | /         |
 | Get Task by ID | GET           | /:task_id |
 | Update Task    | PUT           | /:task_id |
 | Delete Task    | DELETE        | /:task_id |
 
-###Schemas
+### Schemas
 
 userObject = {
 username: "User 1",
