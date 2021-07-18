@@ -18,7 +18,7 @@ Cypress.Commands.add('register', (username, password, role) => {
 		.should('eq', 201);
 });
 
-Cypress.Commands.add('tasks', (title, description, completeBy) => {
+Cypress.Commands.add('task', (title, description, completeBy) => {
 	const token = Cypress.env('token');
 	const authorization = `${token}`;
 	const options = {
@@ -47,23 +47,23 @@ describe('CRUD for Tasks', () => {
 	beforeEach(() => {
 		cy.exec('knex seed:run');
 		cy.register('Test User 1', 'pass', 'consumer');
-		cy.tasks('Task 1', 'description', '03-03-2022');
-		cy.tasks('Task 2', 'description', '03-03-2022');
-		cy.tasks('Task 3', 'description', '03-03-2022');
+		cy.task('Task 1', 'description', '03-03-2022');
+		cy.task('Task 2', 'description', '03-03-2022');
+		cy.task('Task 3', 'description', '03-03-2022');
 	});
 	it('Gets a Task by Id', () => {
 		const token = Cypress.env('token');
 		const authorization = `${token}`;
 		const options = {
 			method: 'GET',
-			url: '/api/tasks/task/1',
+			url: '/api/tasks/task/2',
 			headers: {
 				authorization,
-      },
+			},
 		};
 		cy.request(options).then((res) => {
 			expect(res.status).eq(200);
-			expect(res.body.errand).property('title').eq('Task 1');
+			expect(res.body).property('title').eq('Task 2');
 		});
 	});
 });

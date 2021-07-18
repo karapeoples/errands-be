@@ -5,7 +5,7 @@ const findById = (id) => {
 };
 
 const findTaskByConsumer = (id) => {
-	return db('tasks').where(id);
+	return db('tasks').where('consumer_id', id);
 };
 const add = (task) => {
 	return db('tasks')

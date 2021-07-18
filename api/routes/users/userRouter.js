@@ -47,9 +47,13 @@ router.get('/user/:id', (req, res) => {
 
 router.get('/user/:consumer_id/tasks', (req, res) => {
 	const { consumer_id } = req.params;
-	Tasks.findTaskByConsumer({ consumer_id })
+	Tasks.findTaskByConsumer(consumer_id)
 		.then((errand) => {
-			res.status(200).json(errand);
+			if (!errand) {
+				res.status(400).json({ message: `No task for user with the id of ${consumer_id}` });
+			} else {
+				res.status(200).json(errand);
+			}
 		})
 		.catch((err) => {
 			res.status(500).json({ error: err.message, note: 'Try again' });
@@ -61,7 +65,7 @@ router.post('/user/:consumer_id/task', (req, res) => {
 		title: req.body.title,
 		description: req.body.description,
 		completeBy: req.body.completeBy,
-		consumer_id: req.params.id,
+		consumer_id: req.params.consumer_id,
 	};
 	Tasks.add(taskObj)
 		.then((errand) => {
