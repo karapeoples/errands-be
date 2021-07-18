@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
 				}
 			})
 	} else {
-		return res.status(400).json({ error: err.message, note: 'Please provide an username and password' })
+		return res.status(400).json({ note: 'Please provide an username and password' })
 	}
 
 }

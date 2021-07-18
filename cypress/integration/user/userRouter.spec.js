@@ -102,64 +102,6 @@ describe('Add an Authenticated Admin', () => {
 			expect(res.body).property('role').equal('consumer');
 		});
 	});
-	it('Makes a Task', () => {
-		cy.login('Test User 1', 'password');
-		 	const token = Cypress.env('token');
-			const authorization = `${token}`;
-			const options = {
-				method: 'POST',
-				url: '/api/users/user/1/task',
-				headers: {
-					authorization,
-				},
-			body:{
-        title: 'A Title',
-        description: 'A Description',
-        completeBy: '7-17-2021',
-      },
-    };
-    cy.request(options).then((res) => {
-      expect(res.status).equal(201);
-      expect(res.body.errand).property('consumer_id').to.equal(1)
-    })
-  })
-  it('Adds a Task with another user', () => {
-    cy.login('Test User 2', 'password')
-    const token = Cypress.env('token');
-    const authorization = `${token}`;
-    const options = {
-					method: 'POST',
-					url: '/api/users/user/2/task',
-					headers: {
-						authorization,
-					},
-					body: {
-						title: 'A Title',
-						description: 'A Description',
-						completeBy: '7-17-2021',
-					},
-				};
-    cy.request(options).then((res) => {
-      expect(res.status).equal(201);
-      expect(res.body.errand).property('consumer_id').to.equal(2)
-		})
-		it('Returns all Users Tasks', () => {
-			const options = {
-				method: 'GET',
-				url: '/api/users/user/2/tasks',
-			};
-			cy.request(options).then((res) => {
-				expect(res.status).equal(200);
-				expect(res.body.errand).property('consumer_id').to.equal(2);
-			});
-		})
-  })
-
-
-
-
-
-
   it('Deletes a User', () => {
         const token = Cypress.env('token');
 				const authorization = `${token}`;
@@ -176,4 +118,68 @@ describe('Add an Authenticated Admin', () => {
       expect(res.body).property('message').equal(`Removed Consumer id ${id} from the database`);
     })
   })
-});
+})
+
+describe('Checks User Tasks', () => {
+	it('Makes a Task', () => {
+		cy.exec('knex seed:run');
+		cy.register('Test Admin', 'password', 'admin');
+		cy.register('Test User 1', 'password', 'consumer');
+		cy.register('Test User 2', 'password', 'consumer');
+		cy.login('Test User 1', 'password');
+		const token = Cypress.env('token');
+		const authorization = `${token}`;
+		const options = {
+			method: 'POST',
+			url: '/api/users/user/1/task',
+			headers: {
+				authorization,
+			},
+			body: {
+				title: 'A Title',
+				description: 'A Description',
+				completeBy: '7-17-2021',
+			},
+		};
+		cy.request(options).then((res) => {
+			expect(res.status).equal(201);
+			expect(res.body.errand).property('consumer_id').to.equal(1)
+		})
+	})
+	it('Adds a Task with another user', () => {
+		cy.login('Test User 2', 'password')
+		const token = Cypress.env('token');
+		const authorization = `${token}`;
+		const options = {
+			method: 'POST',
+			url: '/api/users/user/2/task',
+			headers: {
+				authorization,
+			},
+			body: {
+				title: 'A Title',
+				description: 'A Description',
+				completeBy: '7-17-2021',
+			},
+		};
+		cy.request(options).then((res) => {
+			expect(res.status).equal(201);
+			expect(res.body.errand).property('consumer_id').to.equal(2)
+		})
+	})
+	it('Returns all Users Tasks', () => {
+		const token = Cypress.env('token');
+		const authorization = `${token}`;
+
+		const options = {
+			method: 'GET',
+			url: '/api/users/user/2/tasks',
+		headers: {
+				authorization,
+			}
+		};
+		cy.request(options).then((res) => {
+			expect(res.status).equal(200);
+		});
+	})
+})
