@@ -1,21 +1,19 @@
-const jwt = require('jsonwebtoken')
-const { jwtSecret } = require('./secret')
+const jwt = require('jsonwebtoken');
+const { jwtSecret } = require('./secret');
 
 module.exports = (req, res, next) => {
-	const { authorization } = req.headers
-
+	const { authorization } = req.headers;
 
 	if (authorization) {
 		jwt.verify(authorization, jwtSecret, (err, decodedToken) => {
 			if (err) {
-					return res.status(401).json({ error: err.message, note: 'Not Authorized Invalid Creds' });
+				return res.status(401).json({ error: err.message, note: 'Not Authorized Invalid Creds' });
 			} else {
 				req.decodedToken = decodedToken;
-				next()
-				}
-			})
+				next();
+			}
+		});
 	} else {
-		return res.status(400).json({ note: 'Please provide an username and password' })
+		return res.status(400).json({ note: 'Please provide an username and password' });
 	}
-
-}
+};

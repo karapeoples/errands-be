@@ -38,14 +38,14 @@ Cypress.Commands.add('login', (username, password) => {
 });
 
 describe('Add an Authenticated Admin', () => {
-    beforeEach(() => {
-      cy.exec('knex seed:run');
-			cy.register('Test Admin', 'password', 'admin');
-			cy.register('Test User 1', 'password', 'consumer');
-			cy.register('Test User 2', 'password', 'consumer');
-    })
-  it('Gets All Admins', () => {
-		cy.login('Test Admin', 'password')
+	beforeEach(() => {
+		cy.exec('knex seed:run');
+		cy.register('Test Admin', 'password', 'admin');
+		cy.register('Test User 1', 'password', 'consumer');
+		cy.register('Test User 2', 'password', 'consumer');
+	});
+	it('Gets All Admins', () => {
+		cy.login('Test Admin', 'password');
 		const token = Cypress.env('token');
 		const authorization = `${token}`;
 		const options = {
@@ -63,7 +63,7 @@ describe('Add an Authenticated Admin', () => {
 			expect(res.body).property('user_id').to.be.a('number');
 			expect(res.body).property('role').equal('admin');
 		});
-  });
+	});
 	it('Gets All Users', () => {
 		const token = Cypress.env('token');
 		const authorization = `${token}`;
@@ -102,23 +102,23 @@ describe('Add an Authenticated Admin', () => {
 			expect(res.body).property('role').equal('consumer');
 		});
 	});
-  it('Deletes a User', () => {
-        const token = Cypress.env('token');
-				const authorization = `${token}`;
-				const options = {
-					method: 'DELETE',
-					url: '/api/users/delete/1',
-					headers: {
-						authorization,
-					},
-        };
-    const id = 1
-    cy.request(options).then((res) => {
-      expect(res.status).equal(200)
-      expect(res.body).property('message').equal(`Removed Consumer id ${id} from the database`);
-    })
-  })
-})
+	it('Deletes a User', () => {
+		const token = Cypress.env('token');
+		const authorization = `${token}`;
+		const options = {
+			method: 'DELETE',
+			url: '/api/users/delete/1',
+			headers: {
+				authorization,
+			},
+		};
+		const id = 1;
+		cy.request(options).then((res) => {
+			expect(res.status).equal(200);
+			expect(res.body).property('message').equal(`Removed Consumer id ${id} from the database`);
+		});
+	});
+});
 
 describe('Checks User Tasks', () => {
 	it('Makes a Task', () => {
@@ -143,11 +143,11 @@ describe('Checks User Tasks', () => {
 		};
 		cy.request(options).then((res) => {
 			expect(res.status).equal(201);
-			expect(res.body.errand).property('consumer_id').to.equal(1)
-		})
-	})
+			expect(res.body.errand).property('consumer_id');
+		});
+	});
 	it('Adds a Task with another user', () => {
-		cy.login('Test User 2', 'password')
+		cy.login('Test User 2', 'password');
 		const token = Cypress.env('token');
 		const authorization = `${token}`;
 		const options = {
@@ -164,22 +164,24 @@ describe('Checks User Tasks', () => {
 		};
 		cy.request(options).then((res) => {
 			expect(res.status).equal(201);
-			expect(res.body.errand).property('consumer_id').to.equal(2)
-		})
-	})
+			expect(res.body.errand).property('consumer_id');
+		});
+	});
 	it('Returns all Users Tasks', () => {
 		const token = Cypress.env('token');
 		const authorization = `${token}`;
-
+		let taskArr = [];
 		const options = {
 			method: 'GET',
 			url: '/api/users/user/2/tasks',
-		headers: {
+			headers: {
 				authorization,
-			}
+			},
 		};
 		cy.request(options).then((res) => {
 			expect(res.status).equal(200);
+			taskArr.push(res);
+			expect(taskArr).to.have.length(1);
 		});
-	})
-})
+	});
+});

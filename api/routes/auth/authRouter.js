@@ -1,13 +1,18 @@
-const [express, bcryptjs, jwt, { jwtSecret },regUser] = [require('express'), require('bcryptjs'), require('jsonwebtoken'), require('./secret'),require('./authModel') ]
+const [express, bcryptjs, jwt, { jwtSecret }, regUser] = [
+	require('express'),
+	require('bcryptjs'),
+	require('jsonwebtoken'),
+	require('./secret'),
+	require('./authModel'),
+];
 
-const router = express.Router()
-
+const router = express.Router();
 
 const generateToken = (user) => {
 	const payload = {
 		user_id: user.id,
 		username: user.username,
-		role: user.role
+		role: user.role,
 	};
 
 	const options = {
@@ -51,7 +56,7 @@ router.post('/register', async (req, res, next) => {
 				next('auth router did not find a valid user type');
 		}
 		token = generateToken(userObject);
-		res.status(201).json({ createdUser: newUser, roleId: userRole, token:token });
+		res.status(201).json({ createdUser: newUser, roleId: userRole, token: token });
 	} catch (error) {
 		res.status(500).json({ errorMsg: error.message, message: 'Was not able to register user' });
 	}
@@ -79,6 +84,5 @@ router.post('/login', async (req, res) => {
 		}
 	}
 });
-
 
 module.exports = router;

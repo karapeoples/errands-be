@@ -11,7 +11,7 @@ router.get('/admin', (req, res) => {
 			}
 		})
 		.catch((error) => {
-			res.status(500).json({ errorMsg: error.message, note: 'There are no admins!' })
+			res.status(500).json({ errorMsg: error.message, note: 'There are no admins!' });
 		});
 });
 
@@ -46,7 +46,7 @@ router.get('/user/:id', (req, res) => {
 });
 
 router.get('/user/:consumer_id/tasks', (req, res) => {
-	const  {consumer_id} = req.params
+	const { consumer_id } = req.params;
 	Tasks.findTaskByConsumer({ consumer_id })
 		.then((errand) => {
 			res.status(200).json(errand);
@@ -74,12 +74,13 @@ router.post('/user/:consumer_id/task', (req, res) => {
 
 router.delete('/delete/:id', (req, res, next) => {
 	const { id } = req.params;
-	User.removeUser(id).then((removed) => {
-						removed
-							? res.status(200).json({
-									message: `Removed Consumer id ${id} from the database`,
-							})
-							: null;
+	User.removeUser(id)
+		.then((removed) => {
+			removed
+				? res.status(200).json({
+						message: `Removed Consumer id ${id} from the database`,
+				  })
+				: null;
 		})
 		.catch((error) =>
 			res.status(500).json({
@@ -89,4 +90,4 @@ router.delete('/delete/:id', (req, res, next) => {
 		);
 });
 
-module.exports = router
+module.exports = router;

@@ -1,19 +1,17 @@
 const db = require('../../../data/dbConfig');
 
-
-
 const findById = (id) => {
 	return db('tasks').where({ id }).first();
 };
 
 const findTaskByConsumer = (id) => {
-  return db('tasks').where(id);
-}
+	return db('tasks').where(id);
+};
 const add = (task) => {
-  return db('tasks')
-    .insert(task)
-    .then((ids) => {
-      return findById(ids);
+	return db('tasks')
+		.insert(task)
+		.then((ids) => {
+			return findById(ids);
 		});
 };
 
@@ -26,8 +24,8 @@ const remove = (id) => {
 };
 
 module.exports = {
-  findById,
-  findTaskByConsumer,
+	findById,
+	findTaskByConsumer,
 	add,
 	update,
 	remove,
