@@ -48,8 +48,6 @@ router.post('/register', (req, res, next) => {
 					};
 					userRole = regUser.addAdmin(roleInfo);
 					break;
-				default:
-					next();
 			}
 			userRole.then((userInfo) => {
 				(token = generateToken(userObject)), res.status(201).json({ createdUser: newUser, roleId: userInfo, token: token });
@@ -61,10 +59,9 @@ router.post('/register', (req, res, next) => {
 });
 
 router.post('/login', (req, res) => {
-	if (!req.body || !req.body.password || !req.body.username) {
-		next();
-	} else {
-		let { username, password } = req.body;
+	const username = req.body.username
+	const password = req.body.password
+	if(username && password) {
 		regUser
 			.findBy({ username })
 			.then((user) => {
@@ -72,7 +69,7 @@ router.post('/login', (req, res) => {
 					const roleInfo = regUser.findTypeById(user.id, user.role);
 					roleInfo.then((userInfo) => {
 						const token = generateToken(user);
-						res.status(200).json({ user: user, roleInfo: userInfo, token: token });
+						res.status(201).json({ user: user, roleInfo: userInfo, token: token });
 					});
 				} else {
 					res.status(401).json({ message: 'Invalid Login Credentials' });
