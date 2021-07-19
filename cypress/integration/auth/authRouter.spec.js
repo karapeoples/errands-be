@@ -15,9 +15,16 @@ describe('Register~Login~Authentication', () => {
 		cy.exec('knex seed:run');
 	});
 	it('Registers An Admin', () => {
-		cy
-			.request('POST', '/api/welcome/register', { username: 'Test Admin', password: 'password', role: 'admin' })
-			.as('newUser')
+		const options = {
+			method: 'POST',
+			url: '/api/welcome/register',
+			body: {
+				username: 'Test Admin',
+				password: 'password',
+				role: 'admin'
+			}}
+		cy.request(options)
+			/* .as('newUser') */
 			.then((res) => {
 				expect(res.status).equal(201);
 				expect(res.body).property('token');
@@ -64,3 +71,41 @@ describe('Register~Login~Authentication', () => {
 		});
 	});
 });
+
+describe('Tests can Fail', () => {
+	beforeEach(() => {
+		cy.exec('knex seed: run')
+	})
+	it('Fails to Register', () => {
+		const options = {
+			method: 'POST',
+			url: '/api/welcome/register',
+			body: {
+				username: 'Test Admin',
+				password: 'password',
+				role: '',
+			},
+			failOnStatusCode: false,
+		};
+		cy.request(options).then((res) => {
+			expect(res.status).eq(500);
+			expect(res.body.message).eq('Was not able to register user');
+		});
+	});
+	it('Fails to Login', () => {
+		const options = {
+			method: 'POST',
+			url: '/api/welcome/login',
+			body: {
+				username: 'Test Admin',
+				password: 'password',
+				role: '',
+			},
+			failOnStatusCode: false,
+		};
+		cy.request(options).then((res) => {
+			expect(res.status).eq(500);
+			expect(res.body.message).eq('Was not able to register user');
+		});
+	})
+})

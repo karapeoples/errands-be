@@ -76,7 +76,7 @@ router.post('/user/:consumer_id/task', (req, res) => {
 		});
 });
 
-router.delete('/delete/:id', (req, res, next) => {
+router.delete('/delete/:id', (req, res) => {
 	const { id } = req.params;
 	User.removeUser(id)
 		.then((removed) => {

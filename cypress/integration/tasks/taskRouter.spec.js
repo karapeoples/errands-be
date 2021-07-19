@@ -18,12 +18,32 @@ Cypress.Commands.add('register', (username, password, role) => {
 		.should('eq', 201);
 });
 
-Cypress.Commands.add('task', (title, description, completeBy) => {
+Cypress.Commands.add('login', (username, password) => {
+	cy
+		.request({
+			method: 'POST',
+			url: '/api/welcome/login',
+			body: {
+				username,
+				password,
+			},
+		})
+		.as('registerResponse')
+		.then((response) => {
+			Cypress.env('token', response.body.token);
+			return response;
+		})
+		.its('status')
+		.should('eq', 200);
+});
+
+Cypress.Commands.add('tasks', (title, description, completeBy) => {
+	cy.login('Test User 2', 'password');
 	const token = Cypress.env('token');
 	const authorization = `${token}`;
 	const options = {
 		method: 'POST',
-		url: '/api/users/user/1/task',
+		url: '/api/users/user/2/task',
 		headers: {
 			authorization,
 		},
@@ -46,10 +66,11 @@ Cypress.Commands.add('task', (title, description, completeBy) => {
 describe('CRUD for Tasks', () => {
 	beforeEach(() => {
 		cy.exec('knex seed:run');
-		cy.register('Test User 1', 'pass', 'consumer');
-		cy.task('Task 1', 'description', '03-03-2022');
-		cy.task('Task 2', 'description', '03-03-2022');
-		cy.task('Task 3', 'description', '03-03-2022');
+		cy.register('Test User 1', 'password', 'consumer');
+		cy.register('Test User 2', 'password', 'consumer');
+		cy.tasks('Task 1', 'description', '03-03-2022');
+		cy.tasks('Task 2', 'description', '03-03-2022');
+		cy.tasks('Task 3', 'description', '03-03-2022');
 	});
 	it('Gets a Task by Id', () => {
 		const token = Cypress.env('token');

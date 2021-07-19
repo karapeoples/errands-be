@@ -21,7 +21,7 @@ const generateToken = (user) => {
 	return jwt.sign(payload, jwtSecret, options);
 };
 
-router.post('/register', async (req, res, next) => {
+router.post('/register', (req, res, next) => {
 	const { username, password, role } = req.body;
 	const rounds = process.env.BCRYPT_ROUNDS;
 	const hash = bcryptjs.hashSync(password, rounds);
@@ -30,44 +30,41 @@ router.post('/register', async (req, res, next) => {
 		role,
 		password: hash,
 	};
-	try {
-		// add new user to the db
-		let newUser = await regUser.add(userObject);
-		// create variables to save new user info for response
+	return regUser.add(userObject)
+		.then((newUser) => {
 		let roleInfo = {};
-		let userRole = {};
-		let newUserId = newUser.id;
-		// check new users role - add additional info for volunteers
+		let userRole
 		switch (newUser.role) {
 			case 'consumer':
 				roleInfo = {
-					user_id: newUserId,
-				};
-				userRole = await regUser.addUser(roleInfo);
+					user_id: newUser.id,
+				}
+				userRole = regUser.addUser(roleInfo)
 				break;
 			case 'admin':
-				// add user_id to respective role table for foreign key requirement
 				roleInfo = {
-					user_id: newUserId,
+					user_id: newUser.id,
 				};
-				userRole = await regUser.addAdmin(roleInfo);
+				userRole = regUser.addAdmin(roleInfo)
 				break;
 			default:
-				next('auth router did not find a valid user type');
+				next();
 		}
-		token = generateToken(userObject);
-		res.status(201).json({ createdUser: newUser, roleId: userRole, token: token });
-	} catch (error) {
-		res.status(500).json({ errorMsg: error.message, message: 'Was not able to register user' });
-	}
+			userRole.then((userInfo) => {
+				token = generateToken(userObject),
+				res.status(201).json({ createdUser: newUser, roleId: userInfo, token: token })
+})
+})
+	 .catch((err)=>  {
+		res.status(500).json({ errorMsg: err.message, message: 'Was not able to register user' });
+	})
 });
 
 router.post('/login', async (req, res) => {
 	if (!req.body || !req.body.password || !req.body.username) {
-		next('A valid username and password are required.');
+		next.json({message: 'A valid username and password are required.'});
 	} else {
 		let { username, password } = req.body;
-
 		try {
 			// find user by email
 			const user = await regUser.findBy({ username });
