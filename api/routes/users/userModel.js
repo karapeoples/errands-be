@@ -1,7 +1,9 @@
 const db = require('../../../data/dbConfig');
 
 const findAdmin = () => {
-	return db('admin as a').join('newUser as u', 'a.user_id', 'u.id').select('a.id as admin_id', 'u.id as user_id', 'u.*');
+	return db('admin as a')
+		.join('newUser as u', 'a.user_id', 'u.id')
+		.select('a.id as admin_id', 'u.id as user_id', 'u.*');
 };
 
 const findUser = () => {

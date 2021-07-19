@@ -8,6 +8,8 @@ describe('AUTHENTICATED USER CAN PERFORM USER METHODS', () => {
 				cy.register('Test User 2', 'password', 'consumer');
 			});
 			it('Gets All Admins', () => {
+				cy.register('Test Admin 2', 'password', 'admin');
+				cy.register('Test Admin 3', 'password', 'admin');
 				cy.login('Test Admin', 'password');
 				const options = {
 					method: 'GET',
@@ -18,74 +20,134 @@ describe('AUTHENTICATED USER CAN PERFORM USER METHODS', () => {
 				};
 				cy.request(options).then((res) => {
 					expect(res.status).eq(200);
-					expect(res.body).property('username').a('string');
-					expect(res.body).a('Object');
-					expect(res.body).property('password').a('string');
-					expect(res.body).property('user_id').a('number');
-					expect(res.body).property('role').eq('admin');
+					expect(res.body).a('Array').length(3);
+					expect(res.body[1]).a('Object');
+					expect(res.body[1]).property('username').a('string').eq('Test Admin 2');
+					expect(res.body[1]).property('password').a('string');
+					expect(res.body[1]).property('user_id').a('number').eq(4);
+					expect(res.body[1]).property('role').a('string').eq('admin');
 				});
 			});
-			//# KARA RENEE START HERE DON'T FORGET TO GO TO POSTMAN FOR ARRAY CHECKING ABOVE 7/19/2021 NOTE TO SELF
 			it('Gets All Users', () => {
-				const token = Cypress.env('token');
-				const authorization = `${token}`;
 				const options = {
 					method: 'GET',
 					url: '/api/users/user',
 					headers: {
-						authorization,
+						authorization: Cypress.env('token'),
 					},
 				};
 				cy.request(options).then((res) => {
-					expect(res.status).equal(200);
-					expect(res.body).property('username').to.be.a('string');
-					expect(res.body).to.be.a('Object');
-					expect(res.body).property('password').to.be.a('string');
-					expect(res.body).property('user_id').to.be.a('number');
-					expect(res.body).property('role').equal('consumer');
+					expect(res.status).eq(200);
+					expect(res.body).a('Array').length(2);
+					expect(res.body[1]).a('Object');
+					expect(res.body[1]).property('username').a('string').eq('Test User 2');
+					expect(res.body[1]).property('password').a('string');
+					expect(res.body[1]).property('user_id').a('number').eq(3);
+					expect(res.body[1]).property('role').a('string').eq('consumer');
 				});
 			});
 			it('Gets A Single User', () => {
-				const token = Cypress.env('token');
-				const authorization = `${token}`;
 				const options = {
 					method: 'GET',
 					url: '/api/users/user/1',
 					headers: {
-						authorization,
+						authorization: Cypress.env('token'),
 					},
 				};
 				cy.request(options).then((res) => {
-					expect(res.status).equal(200);
-					expect(res.body).property('username').to.be.a('string').equal('Test User 1');
-					expect(res.body).to.be.a('Object');
-					expect(res.body).property('password').to.be.a('string');
-					expect(res.body).property('user_id').to.be.a('number').equal(2);
-					expect(res.body).property('role').equal('consumer');
+					expect(res.status).eq(200);
+					expect(res.body).a('Object');
+					expect(res.body).property('username').a('string').eq('Test User 1');
+					expect(res.body).property('password').a('string');
+					expect(res.body).property('user_id').a('number').eq(2);
+					expect(res.body).property('role').a('string').eq('consumer');
 				});
 			});
 			it('Deletes a User', () => {
-				const token = Cypress.env('token');
-				const authorization = `${token}`;
 				const options = {
 					method: 'DELETE',
 					url: '/api/users/delete/1',
 					headers: {
-						authorization,
+						authorization: Cypress.env('token'),
 					},
 				};
-				const id = 1;
 				cy.request(options).then((res) => {
-					expect(res.status).equal(200);
-					expect(res.body).property('message').equal(`Removed Consumer id ${id} from the database`);
+					expect(res.status).eq(200);
+					expect(res.body).property('message').a('string').eq(`Removed Consumer id 1 from the database`);
+					expect(res.body).property('deletedInfo').a('number').eq(1);
+				});
+			});
+		});
+
+		describe('FAIL', () => {
+			it('No Admins In Database', () => {
+				cy.exec('knex seed:run');
+				cy.register('Test User', 'password', 'consumer');
+				const options = {
+					method: 'GET',
+					url: '/api/users/admin',
+					headers: {
+						authorization: Cypress.env('token'),
+					},
+					failOnStatusCode: false,
+				};
+				cy.request(options).then((res) => {
+					expect(res.status).eq(400);
+					expect(res.body).property('message').a('string').eq('There are no admins!');
+				});
+			});
+			it('No Users In Database', () => {
+				cy.exec('knex seed:run');
+				cy.register('Test Admin', 'password', 'admin');
+				const options = {
+					method: 'GET',
+					url: '/api/users/user',
+					headers: {
+						authorization: Cypress.env('token'),
+					},
+					failOnStatusCode: false,
+				};
+				cy.request(options).then((res) => {
+					expect(res.status).eq(400);
+					expect(res.body).property('message').a('string').eq('There are no users!');
+				});
+			});
+
+			it('No User By That Id', () => {
+				cy.exec('knex seed:run');
+				cy.register('Test Admin', 'password', 'admin');
+				const options = {
+					method: 'GET',
+					url: '/api/users/user/1',
+					headers: {
+						authorization: Cypress.env('token'),
+					},
+					failOnStatusCode: false,
+				};
+				cy.request(options).then((res) => {
+					expect(res.status).eq(400);
+					expect(res.body).property('message').a('string').eq('No user with the id of 1');
+				});
+			});
+			it('No User To Delete', () => {
+				cy.login('Test Admin', 'password');
+				const options = {
+					method: 'DELETE',
+					url: '/api/users/delete/1',
+					headers: {
+						authorization: Cypress.env('token'),
+					},
+					failOnStatusCode: false,
+				};
+				cy.request(options).then((res) => {
+					expect(res.status).eq(400);
+					expect(res.body).property('message').a('string').eq('No user with the id of 1');
 				});
 			});
 		});
 	});
-	/* describe('FAIL', () => {
-
-	}) */
 });
+//# Starting Point Again Kara
 describe('CONSUMER TASK METHODS', () => {
 	describe('PASS', () => {
 		after(() => {

@@ -3,28 +3,28 @@ const router = express.Router();
 
 router.get('/admin', (req, res) => {
 	User.findAdmin()
-		.then(([admins]) => {
-			if (!admins) {
+		.then((admins) => {
+			if (!admins.length) {
 				res.status(400).json({ message: 'There are no admins!' });
-			} else {
+			} else{
 				res.status(200).json(admins);
 			}
 		})
 		.catch((error) => {
-			res.status(500).json({ errorMsg: error.message, note: 'There are no admins!' });
+			res.status(500).json({ errorMsg: error.message, note: 'Database Error' });
 		});
 });
 
 router.get('/user', (req, res) => {
 	User.findUser()
-		.then(([users]) => {
-			if (!users) {
+		.then((users) => {
+			if (!users.length) {
 				res.status(400).json({ message: 'There are no users!' });
-			} else {
+			} else{
 				res.status(200).json(users);
 			}
 		})
-		.catch((error) => res.status(500).json({ errorMsg: error.message, message: 'There are no users!' }));
+		.catch((error) => res.status(500).json({ errorMsg: error.message, message: 'Database Error' }));
 });
 
 router.get('/user/:id', (req, res) => {
@@ -81,10 +81,8 @@ router.delete('/delete/:id', (req, res) => {
 	User.removeUser(id)
 		.then((removed) => {
 			removed
-				? res.status(200).json({
-						message: `Removed Consumer id ${id} from the database`,
-				  })
-				: null;
+				? res.status(200).json({ deletedInfo: removed, message: `Removed Consumer id ${id} from the database` })
+				: res.status(400).json({ message: `No user with the id of ${id}` })
 		})
 		.catch((error) =>
 			res.status(500).json({
