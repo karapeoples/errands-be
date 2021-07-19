@@ -30,55 +30,57 @@ router.post('/register', (req, res, next) => {
 		role,
 		password: hash,
 	};
-	return regUser.add(userObject)
+	return regUser
+		.add(userObject)
 		.then((newUser) => {
-		let roleInfo = {};
-		let userRole
-		switch (newUser.role) {
-			case 'consumer':
-				roleInfo = {
-					user_id: newUser.id,
-				}
-				userRole = regUser.addUser(roleInfo)
-				break;
-			case 'admin':
-				roleInfo = {
-					user_id: newUser.id,
-				};
-				userRole = regUser.addAdmin(roleInfo)
-				break;
-			default:
-				next();
-		}
+			let roleInfo = {};
+			let userRole;
+			switch (newUser.role) {
+				case 'consumer':
+					roleInfo = {
+						user_id: newUser.id,
+					};
+					userRole = regUser.addUser(roleInfo);
+					break;
+				case 'admin':
+					roleInfo = {
+						user_id: newUser.id,
+					};
+					userRole = regUser.addAdmin(roleInfo);
+					break;
+				default:
+					next();
+			}
 			userRole.then((userInfo) => {
-				token = generateToken(userObject),
-				res.status(201).json({ createdUser: newUser, roleId: userInfo, token: token })
-})
-})
-	 .catch((err)=>  {
-		res.status(500).json({ errorMsg: err.message, message: 'Was not able to register user' });
-	})
+				(token = generateToken(userObject)), res.status(201).json({ createdUser: newUser, roleId: userInfo, token: token });
+			});
+		})
+		.catch((err) => {
+			res.status(500).json({ errorMsg: err.message, message: 'Was not able to register user' });
+		});
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', (req, res) => {
 	if (!req.body || !req.body.password || !req.body.username) {
-		next.json({message: 'A valid username and password are required.'});
+		next();
 	} else {
 		let { username, password } = req.body;
-		try {
-			// find user by email
-			const user = await regUser.findBy({ username });
-
-			if (user && bcryptjs.compareSync(password, user.password)) {
-				const roleInfo = await regUser.findTypeById(user.id, user.role);
-				const token = generateToken(user);
-				res.status(200).json({ user: user, roleInfo: roleInfo, token: token });
-			} else {
-				res.status(401).json({ message: 'Invalid Login Credentials' });
-			}
-		} catch (error) {
-			res.status(500).json({ errorMsg: error.message, message: 'Was not able to login user' });
-		}
+		regUser
+			.findBy({ username })
+			.then((user) => {
+				if (user && bcryptjs.compareSync(password, user.password)) {
+					const roleInfo = regUser.findTypeById(user.id, user.role);
+					roleInfo.then((userInfo) => {
+						const token = generateToken(user);
+						res.status(200).json({ user: user, roleInfo: userInfo, token: token });
+					});
+				} else {
+					res.status(401).json({ message: 'Invalid Login Credentials' });
+				}
+			})
+			.catch((err) => {
+				res.status(500).json({ errorMsg: err.message, message: 'Was not able to login user' });
+			});
 	}
 });
 
