@@ -78,7 +78,6 @@ describe('AUTHENTICATED USER CAN PERFORM USER METHODS', () => {
 				});
 			});
 		});
-
 		describe('FAIL', () => {
 			it('No Admins In Database', () => {
 				cy.exec('knex seed:run');
@@ -112,7 +111,6 @@ describe('AUTHENTICATED USER CAN PERFORM USER METHODS', () => {
 					expect(res.body).property('message').a('string').eq('There are no users!');
 				});
 			});
-
 			it('No User By That Id', () => {
 				cy.exec('knex seed:run');
 				cy.register('Test Admin', 'password', 'admin');
@@ -147,25 +145,22 @@ describe('AUTHENTICATED USER CAN PERFORM USER METHODS', () => {
 		});
 	});
 });
-//# Starting Point Again Kara
 describe('CONSUMER TASK METHODS', () => {
 	describe('PASS', () => {
 		after(() => {
 			cy.exec('knex seed:run');
 		});
-		it('Makes a Task', () => {
+		it('Makes A Task', () => {
 			cy.exec('knex seed:run');
 			cy.register('Test Admin', 'password', 'admin');
 			cy.register('Test User 1', 'password', 'consumer');
 			cy.register('Test User 2', 'password', 'consumer');
 			cy.login('Test User 1', 'password');
-			const token = Cypress.env('token');
-			const authorization = `${token}`;
 			const options = {
 				method: 'POST',
 				url: '/api/users/user/1/task',
 				headers: {
-					authorization,
+					authorization: Cypress.env('token'),
 				},
 				body: {
 					title: 'A Title',
@@ -174,19 +169,22 @@ describe('CONSUMER TASK METHODS', () => {
 				},
 			};
 			cy.request(options).then((res) => {
-				expect(res.status).equal(201);
-				expect(res.body.errand).property('consumer_id').eq(1);
+				expect(res.status).eq(201);
+				expect(res.body).a('Object').property('message').a('string').eq('Success A New Errand was Created');
+				expect(res.body.errand).a('Object');
+				expect(res.body.errand).property('consumer_id').a('number').eq(1);
+				expect(res.body.errand).property('title').a('string').eq('A Title');
+				expect(res.body.errand).property('description').a('string').eq('A Description');
+				expect(res.body.errand).property('completeBy').a('string').eq('7-17-2021');
 			});
 		});
-		it('Adds a Task with another user', () => {
+		it('Adds A Task With Another User', () => {
 			cy.login('Test User 2', 'password');
-			const token = Cypress.env('token');
-			const authorization = `${token}`;
 			const options = {
 				method: 'POST',
 				url: '/api/users/user/2/task',
 				headers: {
-					authorization,
+					authorization: Cypress.env('token'),
 				},
 				body: {
 					title: 'A Title',
@@ -195,30 +193,73 @@ describe('CONSUMER TASK METHODS', () => {
 				},
 			};
 			cy.request(options).then((res) => {
-				expect(res.status).equal(201);
-				expect(res.body.errand).property('consumer_id').eq(2);
+				expect(res.status).eq(201);
+				expect(res.body).a('Object').property('message').a('string').eq('Success A New Errand was Created');
+				expect(res.body.errand).a('Object');
+				expect(res.body.errand).property('consumer_id').a('number').eq(2);
+				expect(res.body.errand).property('title').a('string').eq('A Title');
+				expect(res.body.errand).property('description').a('string').eq('A Description');
+				expect(res.body.errand).property('completeBy').a('string').eq('7-17-2021');
 			});
 		});
 		it('Returns all Users Tasks', () => {
 			cy.login('Test User 2', 'password');
 			cy.tasks('Task 2', 'a little info', '03-02-2022');
 			cy.tasks('Task 3', 'a little info', '03-02-2022');
-			const token = Cypress.env('token');
-			const authorization = `${token}`;
 			const options = {
 				method: 'GET',
 				url: '/api/users/user/2/tasks',
 				headers: {
-					authorization,
+					authorization: Cypress.env('token'),
 				},
 			};
 			cy.request(options).then((res) => {
-				expect(res.status).equal(200);
-				expect(res.body).to.have.length(3);
+				expect(res.status).eq(200);
+				expect(res.body).a('Array').length(3);
+				expect(res.body[1]).a('Object');
+				expect(res.body[1]).property('title').a('string').eq('Task 2');
+				expect(res.body[1]).property('description').a('string').eq('a little info');
+				expect(res.body[1]).property('completeBy').a('string').eq('03-02-2022');
+				expect(res.body[1]).property('consumer_id').a('number').eq(2);
 			});
 		});
 	});
-	/* describe('FAIL', () => {
-
-	}) */
+	describe('FAIL', () => {
+		it('Cannot Make A Task', () => {
+			cy.exec('knex seed:run');
+			cy.register('Test Admin', 'password', 'admin');
+			const options = {
+				method: 'POST',
+				url: '/api/users/user/1/task',
+				headers: {
+					authorization: Cypress.env('token'),
+				},
+				failOnStatusCode: false,
+			};
+			cy.request(options).then((res) => {
+				expect(res.status).eq(500);
+				expect(res.body).a('Object').property('error');
+				expect(res.body).property('note').a('string').eq('Something Is Wrong Try Again');
+			});
+		});
+		it('No User Tasks', () => {
+			cy.exec('knex seed:run');
+			cy.register('Test Admin', 'password', 'admin');
+			cy.register('Test User 1', 'password', 'consumer');
+			cy.register('Test User 2', 'password', 'consumer');
+			cy.login('Test User 1', 'password');
+			const options = {
+				method: 'GET',
+				url: '/api/users/user/1/tasks',
+				headers: {
+					authorization: Cypress.env('token'),
+				},
+				failOnStatusCode: false,
+			};
+			cy.request(options).then((res) => {
+				expect(res.status).eq(400);
+				expect(res.body).a('Object').property('message').a('string').eq('No task for user with the id of 1');
+			});
+		});
+	});
 });

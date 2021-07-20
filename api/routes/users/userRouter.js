@@ -6,7 +6,7 @@ router.get('/admin', (req, res) => {
 		.then((admins) => {
 			if (!admins.length) {
 				res.status(400).json({ message: 'There are no admins!' });
-			} else{
+			} else {
 				res.status(200).json(admins);
 			}
 		})
@@ -20,7 +20,7 @@ router.get('/user', (req, res) => {
 		.then((users) => {
 			if (!users.length) {
 				res.status(400).json({ message: 'There are no users!' });
-			} else{
+			} else {
 				res.status(200).json(users);
 			}
 		})
@@ -49,7 +49,7 @@ router.get('/user/:consumer_id/tasks', (req, res) => {
 	const { consumer_id } = req.params;
 	Tasks.findTaskByConsumer(consumer_id)
 		.then((errand) => {
-			if (!errand) {
+			if (!errand.length) {
 				res.status(400).json({ message: `No task for user with the id of ${consumer_id}` });
 			} else {
 				res.status(200).json(errand);
@@ -72,7 +72,7 @@ router.post('/user/:consumer_id/task', (req, res) => {
 			res.status(201).json({ message: 'Success A New Errand was Created', errand });
 		})
 		.catch((err) => {
-			res.status(500).json({ error: err.message, note: 'There was an error on the Backend with the Database' });
+			res.status(500).json({ error: err.message, note: 'Something Is Wrong Try Again' });
 		});
 });
 
@@ -82,7 +82,7 @@ router.delete('/delete/:id', (req, res) => {
 		.then((removed) => {
 			removed
 				? res.status(200).json({ deletedInfo: removed, message: `Removed Consumer id ${id} from the database` })
-				: res.status(400).json({ message: `No user with the id of ${id}` })
+				: res.status(400).json({ message: `No user with the id of ${id}` });
 		})
 		.catch((error) =>
 			res.status(500).json({

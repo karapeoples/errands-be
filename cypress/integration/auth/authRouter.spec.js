@@ -53,7 +53,6 @@ Cypress.Commands.add('tasks', (title, description, completeBy) => {
 		return res;
 	});
 });
-
 //TESTING SUITE START
 describe('TESTING TESTS', () => {
 	it('Testing Is Working', () => {
@@ -63,7 +62,6 @@ describe('TESTING TESTS', () => {
 		cy.request('/');
 	});
 });
-
 describe('REGISTER~~LOGIN', () => {
 	describe('PASS', () => {
 		beforeEach(() => {
@@ -90,7 +88,6 @@ describe('REGISTER~~LOGIN', () => {
 				expect(res.body.roleInfo).property('user_id').a('number').eq(1);
 			});
 		});
-
 		it('Registers A Consumer', () => {
 			cy.register('Test User', 'password', 'consumer').then((res) => {
 				expect(res.status).eq(201);
@@ -114,7 +111,6 @@ describe('REGISTER~~LOGIN', () => {
 			});
 		});
 	});
-
 	describe('FAIL', () => {
 		beforeEach(() => {
 			cy.exec('knex seed:run');
