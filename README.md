@@ -28,11 +28,11 @@ BASE ROUTE: BASEURL/api/users
 
 BASE ROUTE: BASEURL/api/tasks
 
-| USER-ROUTES    | REQUEST TYPES | ENDPOINTS |
-| -------------- | ------------- | --------- |
-| Get Task by ID | GET           | /:task_id |
-| Update Task    | PUT           | /:task_id |
-| Delete Task    | DELETE        | /:task_id |
+| USER-ROUTES    | REQUEST TYPES | ENDPOINTS     |
+| -------------- | ------------- | ------------- |
+| Get Task by ID | GET           | task/:task_id |
+| Update Task    | PUT           | task/:task_id |
+| Delete Task    | DELETE        | task/:task_id |
 
 ### Schemas
 

@@ -21,11 +21,11 @@ router.put('/task/:task_id', (req, res) => {
 	const body = req.body;
 
 	Tasks.update(task_id, body)
-		.then((errand) => {
+		.then(() => {
 			res.status(200).json({ message: 'The Errand was Updated with the following Info', body });
 		})
 		.catch((err) => {
-			res.status(500).json({ error: err.message, note: 'The changes cannot be made right now' });
+			res.status(500).json({ error: err.message, note: 'Some Required Information is Missing' });
 		});
 });
 
@@ -34,13 +34,13 @@ router.delete('/task/:task_id', (req, res) => {
 	Tasks.findById(task_id)
 		.then((errand) => {
 			errand
-				? Tasks.remove(id).then((deleted) => {
+				? Tasks.remove(task_id).then((deleted) => {
 						deleted ? res.status(200).json({ success: `Errand with ID ${task_id} has been removed`, info: errand }) : null;
 				  })
-				: null;
+				: res.status(400).json({ fail: `No task with the id of ${task_id}` });
 		})
 		.catch((err) => {
-			res.status(500).json({ error: err.message, note: 'It cannot be deleted' });
+			res.status(500).json({ error: err.message, fail: 'It Does Not Exist and Cannot Be Deleted' });
 		});
 });
 
