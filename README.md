@@ -6,7 +6,7 @@ Portfolio Piece and Usable App for Dale and Friends
 
 ### Routes/API/Endpoints
 
-BASEURL: 'localhost'
+BASEURL: https://dale-errands-2.herokuapp.com/
 
 BASE ROUTE: BASEURL/api/welcome
 
