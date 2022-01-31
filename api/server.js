@@ -11,8 +11,8 @@ const [express, helmet, cors, morgan, auth, authRouter, userRouter, taskRouter] 
 const server = express();
 server.use(helmet(), morgan('dev'), cors(), express.json());
 server.use('/api/welcome', authRouter);
-server.use('/api/users', auth, userRouter);
-server.use('/api/tasks', auth, taskRouter);
+server.use('/api/users', userRouter);
+server.use('/api/tasks', taskRouter);
 
 // SEE IF API IS UP
 server.get('/', (req, res) => {
